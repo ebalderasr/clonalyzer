@@ -1,7 +1,64 @@
-# Kinetics Data Analysis for CHO Cell Clones
+# Clonalyzer: Kinetics Data Analysis for CHO Cell Clones
 
 ## Overview
-This repository contains scripts and datasets for analyzing the kinetics of CHO cell clones. The analysis focuses on parameters like cell viability, glucose, glutamine, and lactate concentrations across multiple time points and replicates.
+**Clonalyzer** is a Jupyter Notebook-based tool for processing and analyzing the kinetics of CHO cell clones. It provides data cleaning, visualization, and analysis for parameters like cell viability, glucose, glutamine, and lactate concentrations across multiple time points and replicates. The goal is to streamline kinetic analysis for CHO cell culture experiments.
+
+This project was created in collaboration with Jupyter Notebook to facilitate reproducible research and accessible data analysis.
+
+---
+
+## Author
+**Emiliano Balderas Ramírez**  
+PhD Student at the Instituto de Biotecnología, UNAM  
+Email: [ebalderas@live.com.mx](mailto:ebalderas@live.com.mx)  
+Phone: +52 2221075693  
+
+---
+
+## Project Structure
+The repository is organized as follows:
+
+```plaintext
+├── data/             # Contains input datasets (e.g., kinetic data in CSV format)
+│   └── Datos_cinetica_06nov2024.csv  # Example dataset for analysis
+├── script/           # Scripts and Jupyter Notebooks for analysis
+│   └── clonalyzer.ipynb  # Main notebook for data analysis
+├── LICENSE           # Repository license
+├── README.md         # Documentation for the project
+
+---
+
+## Requirements
+To run the notebook, ensure you have Python 3.8+ and the following packages installed:
+
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scipy`
+
+Install these packages using pip:
+pip install pandas numpy matplotlib seaborn scipy
+
+
+
+---
+
+## Usage
+1. **Prepare your dataset**:
+   - Place your kinetic data in the `data/` folder. The dataset should be a CSV file formatted as described below.
+
+2. **Run the notebook**:
+   - Open the Jupyter Notebook `clonalyzer.ipynb` in the `script/` folder using JupyterLab or Jupyter Notebook:
+     ```
+     jupyter notebook script/clonalyzer.ipynb
+     ```
+   - Follow the cells in the notebook to preprocess, clean, and analyze the data.
+
+3. **Outputs**:
+   - The notebook generates cleaned datasets and visualizations (e.g., time-series plots, scatter plots).
+
+---
 
 ## Data Requirements
 The script processes kinetic data from a CSV file. Below are the required data format and structure:
@@ -36,8 +93,11 @@ The script processes kinetic data from a CSV file. Below are the required data f
 
 ---
 
-## Usage
-1. Place your dataset in the `data/` folder.
-2. Run the script:
-   ```bash
-   python preprocess_kinetics.py
+## Contact
+For questions or suggestions, feel free to contact:  
+**Emiliano Balderas Ramírez**  
+PhD Student at the Instituto de Biotecnología, UNAM  
+Email: [ebalderas@live.com.mx](mailto:ebalderas@live.com.mx)  
+Phone: +52 2221075693  
+
+
