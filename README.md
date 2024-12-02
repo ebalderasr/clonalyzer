@@ -17,6 +17,12 @@
      - Combined plots for parameters with similar units (e.g., Glucose and Glutamine).
    - Saves all plots in a dedicated `figures` directory.
 
+   **Examples of Generated Visualizations**:
+   - **Glucose and Glutamine vs Time**:
+     ![Glucose and Glutamine vs Time](figures/Glucose_and_Glutamine_vs_Time.png)
+   - **Kinetic Parameter Comparison**:
+     ![Kinetic Parameter Comparison](figures/kinetic_parameters_comparison.png)
+
 4. **Kinetic and Stoichiometric Parameter Calculation**:
    - Calculates key parameters such as:
      - Specific growth rates (\( \mu \)).
@@ -32,8 +38,7 @@ Planned features include:
 
 This tool is ideal for researchers in biopharmaceutical development, streamlining the analysis of CHO cell cultures for clone optimization and process improvement.
 
-
-   ---
+---
 
 ## Authors
 **Emiliano Balderas Ramírez**  
@@ -45,8 +50,7 @@ Phone: +52 2221075693
 Principal Investigator, Instituto de Biotecnología, UNAM  
 Email: [tonatiuh.ramirez@ibt.unam.mx](mailto:tonatiuh.ramirez@ibt.unam.mx)  
 
-
-   ---
+---
 
 ## Repository Structure
 The repository is organized as follows:
@@ -58,85 +62,51 @@ clonalyzer/
 │   └── 2024-05-18_Clones_B_C_Kinetics.csv  # Example dataset
 │
 ├── figures/              # Contains generated figures from the analysis
-│   └── (Generated figures will be saved here, with filenames including the dataset name as a suffix)
+│   └── Glucose_and_Glutamine_vs_Time.png  # Example plot
+│   └── kinetic_parameters_comparison.png # Example plot
 │
 ├── clonalyzer.py         # Main script for data processing
 ├── README.md             # Documentation for the project
 └── LICENSE               # License for the repository
-   ```
+```
 
-   ## Requirements
-   To run the notebook, ensure you have Python 3.8+ and the following packages installed:
+---
 
-   - `pandas`
-   - `numpy`
-   - `matplotlib`
-   - `seaborn`
-   - `scipy`
+## Requirements
+To run the notebook, ensure you have Python 3.8+ and the following packages installed:
 
-   Install these packages using pip:
-   ```plaintext
-   pip install pandas numpy matplotlib seaborn scipy
-   ```
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scipy`
 
+Install these packages using pip:
+```plaintext
+pip install pandas numpy matplotlib seaborn scipy
+```
 
-   ---
+---
 
-   ## Usage
-   1. **Prepare your dataset**:
-      - Place your kinetic data in the `data/` folder. The dataset should be a CSV file formatted as described below.
+## Usage
+1. **Prepare your dataset**:
+   - Place your kinetic data in the `data/` folder. The dataset should be a CSV file formatted as described below.
 
-   2. **Run the notebook**:
-      - Open the Jupyter Notebook `clonalyzer.ipynb` in the `script/` folder using JupyterLab or Jupyter Notebook:
-      ```
-      jupyter notebook script/clonalyzer.ipynb
-      ```
-      - Follow the cells in the notebook to preprocess, clean, and analyze the data.
+2. **Run the notebook**:
+   - Open the Jupyter Notebook `clonalyzer.ipynb` in the `script/` folder using JupyterLab or Jupyter Notebook:
+     ```
+     jupyter notebook script/clonalyzer.ipynb
+     ```
+   - Follow the cells in the notebook to preprocess, clean, and analyze the data.
 
-   3. **Outputs**:
-      - The notebook generates cleaned datasets and visualizations (e.g., time-series plots, scatter plots).
+3. **Outputs**:
+   - The notebook generates cleaned datasets and visualizations (e.g., time-series plots, scatter plots).  
 
-   ---
+---
 
-   ## Data Requirements
-   The script processes kinetic data from a CSV file. Below are the required data format and structure:
-
-   ### File Format
-   - The input data must be a **CSV** file with a header row.
-
-   ### Data Format
-   The input dataset must be a CSV file with the following structure:
-
-   ### Columns
-   | **Column Name**        | **Description**                                   | **Units**         | **Example**       |
-   |-------------------------|---------------------------------------------------|-------------------|-------------------|
-   | `Clone`                | Identifier for the CHO cell clone.               | -                 | `Clone_A`, `C1`   |
-   | `rep`                  | Replicate number for each clone.                 | Integer           | `1`, `2`, `3`     |
-   | `T`                    | Timepoints for measurements.                     | Days              | `0`, `1`, `2`     |
-   | `G`                    | Glucose concentration.                           | g/L               | `6.5`, `5.9`      |
-   | `Gln`                  | Glutamine concentration.                         | mmol/L            | `2.5`, `3.1`      |
-   | `Xv`                   | Viable cell density.                             | cells/mL          | `1.2e6`, `2.5e6`  |
-   | `Xd`                   | Dead cell density.                               | cells/mL          | `5.0e4`, `3.0e5`  |
-   | `L`                    | Lactate concentration.                           | g/L               | `0.5`, `1.2`      |
-   | `V`                    | Viability as a percentage.                       | %                 | `95`, `98`        |
-   | `MAb`                  | Monoclonal antibody concentration.               | mg/mL             | `0.8`, `1.5`      |
-   | `rP`                   | Recombinant protein concentration.               | mg/mL             | `0.5`, `0.9`      |
-
-   ### Example Dataset
-   | Clone  | rep | T   | G   | Gln | Xv      | Xd      | L   | V  | MAb | rP  |
-   |--------|-----|-----|-----|-----|---------|---------|-----|----|-----|-----|
-   | Clone1 | 1   | 0.0 | 6.5 | 2.5 | 1.2e6   | 5.0e4   | 0.5 | 95 | 0.8 | 0.5 |
-   | Clone1 | 2   | 1.0 | 6.2 | 2.4 | 1.8e6   | 4.5e4   | 0.6 | 98 | 1.0 | 0.6 |
-   | Clone2 | 1   | 0.0 | 6.4 | 2.6 | 1.1e6   | 5.2e4   | 0.5 | 94 | 0.7 | 0.4 |
-   | Clone2 | 2   | 1.0 | 6.1 | 2.3 | 1.7e6   | 4.7e4   | 0.6 | 97 | 0.9 | 0.5 |
-
-   ---
-
-   ## Contact
-   For questions or suggestions, feel free to contact:  
-   **Emiliano Balderas Ramírez**  
-   PhD Student at the Instituto de Biotecnología, UNAM  
-   Email: [ebalderas@live.com.mx](mailto:ebalderas@live.com.mx)  
-   Phone: +52 2221075693  
-
-
+## Contact
+For questions or suggestions, feel free to contact:  
+**Emiliano Balderas Ramírez**  
+PhD Student at the Instituto de Biotecnología, UNAM  
+Email: [ebalderas@live.com.mx](mailto:ebalderas@live.com.mx)  
+Phone: +52 2221075693  
