@@ -1,11 +1,36 @@
-   # Clonalyzer: Kinetics Data Analysis for CHO Cell Clones
+# Clonalyzer: Kinetics Data Analysis for CHO Cell Clones
 
-   ## Overview
-   **Clonalyzer** is a Python-based tool designed to clean, process, and visualize kinetic data from CHO (Chinese Hamster Ovary) cell clones. It is optimized for experiments involving multiple clones and replicates, allowing users to analyze and compare performance across different experimental conditions.
+## Overview
+**Clonalyzer** is a Python-based tool designed to clean, process, and analyze kinetic data from CHO (Chinese Hamster Ovary) cell clones. It supports experiments involving multiple clones and replicates, enabling users to evaluate performance across various experimental conditions systematically.
 
-   Currently, Clonalyzer focuses on data cleaning and previewing the results to ensure data integrity and usability. Future updates will include automated graph generation, key kinetic and stoichiometric parameter calculations (e.g., growth rates, substrate uptake rates, and product yields), and their visualization.
+### Current Features
+1. **Data Cleaning**:
+   - Removes inconsistencies and ensures the dataset is ready for analysis.
+   - Handles missing values using user-defined strategies (e.g., mean, median, or zero filling).
+   
+2. **Data Preview**:
+   - Provides statistical summaries (`describe`) and basic information (`info`) of the dataset to facilitate exploration.
 
-   This tool is ideal for researchers working in biopharmaceutical development, enabling streamlined analysis of CHO cell cultures and clone optimization.
+3. **Visualization**:
+   - Automatically generates key plots, such as:
+     - Time vs. individual parameters (e.g., Viable Cells, Glucose, Glutamine).
+     - Combined plots for parameters with similar units (e.g., Glucose and Glutamine).
+   - Saves all plots in a dedicated `figures` directory.
+
+4. **Kinetic and Stoichiometric Parameter Calculation**:
+   - Calculates key parameters such as:
+     - Specific growth rates (\( \mu \)).
+     - Substrate uptake rates (\( q \)).
+     - Biomass yields (\( Y \)).
+   - Outputs results as a consolidated DataFrame for easy interpretation and visualization.
+
+### Future Development
+Planned features include:
+- Advanced visualizations for kinetic and stoichiometric parameter comparisons across clones.
+- Automated identification of the exponential growth phase.
+- Expanded support for additional culture parameters (e.g., recombinant protein production).
+
+This tool is ideal for researchers in biopharmaceutical development, streamlining the analysis of CHO cell cultures for clone optimization and process improvement.
 
 
    ---
