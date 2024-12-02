@@ -23,19 +23,21 @@ Email: [tonatiuh.ramirez@ibt.unam.mx](mailto:tonatiuh.ramirez@ibt.unam.mx)
 
    ---
 
-   ## Repository Structure
-   The repository is organized as follows:
+## Repository Structure
+The repository is organized as follows:
 
-   ```plaintext
-   clonalyzer/
-   │
-   ├── data/                 # Contains input datasets (CSV files)
-   │   └── Datos_cinetica_18may2024.csv  # Example dataset
-   │
-   ├── scripts/              # Python scripts for data analysis
-   │   └── clonalyzer.py      # Main script for data processing
-   │
-   └── README.md             # Documentation for the project
+```plaintext
+clonalyzer/
+│
+├── data/                 # Contains input datasets (CSV files)
+│   └── 2024-05-18_Clones_B_C_Kinetics.csv  # Example dataset
+│
+├── figures/              # Contains generated figures from the analysis
+│   └── (Generated figures will be saved here, with filenames including the dataset name as a suffix)
+│
+├── clonalyzer.py         # Main script for data processing
+├── README.md             # Documentation for the project
+└── LICENSE               # License for the repository
    ```
 
    ## Requirements
