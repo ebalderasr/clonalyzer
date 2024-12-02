@@ -27,6 +27,7 @@ The repository is organized as follows:
 ├── README.md         # Documentation for the project
 
 ---
+```
 
 ## Requirements
 To run the notebook, ensure you have Python 3.8+ and the following packages installed:
@@ -38,8 +39,9 @@ To run the notebook, ensure you have Python 3.8+ and the following packages inst
 - `scipy`
 
 Install these packages using pip:
+```plaintext
 pip install pandas numpy matplotlib seaborn scipy
-
+```
 
 
 ---
