@@ -104,6 +104,50 @@ pip install pandas numpy matplotlib seaborn scipy
 
 ---
 
+## Input File Requirements
+
+### File Format
+The input data must be a **CSV** file with the following specifications:
+
+1. **File Location**:
+   - Place the CSV file in the `data/` folder of the repository.
+   - Update the `dataset_path` variable in the code to reference your file:
+     ```python
+     dataset_path = 'data/your_file_name.csv'
+     ```
+
+2. **Metadata Row**:
+   - The first row in the CSV file is reserved for **metadata**. The script skips this row automatically during processing. 
+   - Leave this row blank or use it for notes about the experiment.
+
+3. **Column Names and Units**:
+   - The dataset must include the following columns with the specified names and units:
+
+| **Column Name**         | **Description**                                   | **Units**         | **Example**       |
+|-------------------------|---------------------------------------------------|-------------------|-------------------|
+| `Clone`                | Identifier for the CHO cell clone.               | -                 | `Clone_A`, `C1`   |
+| `T`                    | Timepoints for measurements.                     | Days              | `0`, `1`, `2`     |
+| `G`                    | Glucose concentration.                           | g/L               | `6.5`, `5.9`      |
+| `Gln`                  | Glutamine concentration.                         | mmol/L            | `2.5`, `3.1`      |
+| `Xv`                   | Viable cell density.                             | cells/mL          | `1.2e6`, `2.5e6`  |
+| `Xd`                   | Dead cell density.                               | cells/mL          | `5.0e4`, `3.0e5`  |
+| `L`                    | Lactate concentration.                           | g/L               | `0.5`, `1.2`      |
+| `Glu`                  | Glutamate concentration.                         | mmol/L            | `1.5`, `2.0`      |
+| `V`                    | Viability as a percentage.                       | %                 | `95`, `98`        |
+| `MAb`                  | Monoclonal antibody concentration.               | mg/mL             | `0.8`, `1.5`      |
+| `rP`                   | Recombinant protein concentration.               | mg/mL             | `0.5`, `0.9`      |
+| `rep`                  | Replicate number for each clone.                 | Integer           | `1`, `2`, `3`     |
+
+### Example Dataset
+| Clone  | T   | G   | Gln | Xv      | Xd      | L   | Glu | V  | MAb | rP  | rep |
+|--------|-----|-----|-----|---------|---------|-----|-----|----|-----|-----|-----|
+| C1     | 0.0 | 6.5 | 2.5 | 1.2e6   | 5.0e4   | 0.5 | 1.8 | 95 | 0.8 | 0.5 | 1   |
+| C1     | 1.0 | 6.2 | 2.4 | 1.8e6   | 4.5e4   | 0.6 | 2.0 | 98 | 1.0 | 0.6 | 1   |
+| C2     | 0.0 | 6.4 | 2.6 | 1.1e6   | 5.2e4   | 0.5 | 1.7 | 94 | 0.7 | 0.4 | 2   |
+| C2     | 1.0 | 6.1 | 2.3 | 1.7e6   | 4.7e4   | 0.6 | 1.9 | 97 | 0.9 | 0.5 | 2   |
+
+---
+
 ## Contact
 For questions or suggestions, feel free to contact:  
 **Emiliano Balderas Ramírez**  
