@@ -1,5 +1,3 @@
----
-
 # CHO Cell Culture Kinetic Analysis
 
 This repository contains a Python script designed to analyze fed-batch CHO (Chinese Hamster Ovary) cell culture kinetic data. It automates the process of data cleaning, visualization, and the calculation of key bioprocess parameters, providing insights into clone performance.
@@ -53,37 +51,40 @@ It's highly recommended to use a virtual environment (like `conda` or `venv`) to
 
 Place your raw kinetic data in a `.csv` file. The script expects the following columns (case and exact naming as shown are important in the raw file, though the script renames them for internal use):
 
-| Raw Column Name | Description               | Example Units        |
-| :-------------- | :------------------------ | :------------------- |
-| `Clone`         | Identifier for cell clone | `Clone A`, `Clone B` |
-| `T`             | Time point                | `days`               |
-| `G`             | Glucose concentration     | `g/L`                |
-| `Gln`           | Glutamine concentration   | `mmol/L`             |
-| `Xv`            | Viable Cell Density (VCD) | `cells/mL`           |
-| `Xd`            | Dead Cell Density         | `cells/mL`           |
-| `L`             | Lactate concentration     | `g/L`                |
-| `Glu`           | Glutamate concentration   | `mmol/L`             |
-| `V`             | Viability                 | `%`                  |
-| `MAb`           | Antibody Concentration    | `mg/mL`              |
-| `rP`            | Recombinant Protein       | `mg/mL`              |
-| `rep`           | Replicate number          | `1`, `2`, `3`        |
+| Raw Column Name | Description                       | Example Units        |
+| :-------------- | :-------------------------------- | :------------------- |
+| `Clone`         | Identifier for cell clone         | `Clone A`, `Clone B` |
+| `T`             | Time point                        | `hours`              |
+| `G`             | Glucose concentration             | `g/L`                |
+| `Gln`           | Glutamine concentration           | `mmol/L`             |
+| `Xv`            | Viable Cell Density (VCD)         | `cells/mL`           |
+| `Xm`            | Dead Cell Density                 | `cells/mL`           |
+| `L`             | Lactate concentration             | `g/L`                |
+| `Glu`           | Glutamate concentration           | `mmol/L`             |
+| `V`             | Viability                         | `%`                  |
+| `Mab`           | Antibody Concentration            | `mg/mL`              |
+| `rP`            | Recombinant Protein Concentration | `mg/mL`              |
+| `rep`           | Replicate number                  | `1`, `2`, `3`        |
+
+**Note on other columns in `Example.csv` (e.g., `vivas`, `muertas`, `C`, `dil`):**
+The script is configured to either ignore or remove these columns from the processed DataFrame if they are not explicitly listed in the expected input structure and are not used for analysis. This keeps the data clean and focused on relevant parameters.
 
 **Example:** Your CSV might look something like this (the `rep` column is crucial for distinguishing replicates):
 
-| Clone     | T | G   | Gln | Xv      | Xd | L   | Glu | V  | MAb | rP  | rep |
-| :-------- | :- | :-- | :-- | :------ | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| Clone A   | 0 | 5.0 | 4.0 | 0.5e6   | 0  | 0.1 | 0.1 | 99 | 0   | 0   | 1   |
-| Clone A   | 1 | 4.5 | 3.8 | 1.0e6   | 0  | 0.2 | 0.1 | 98 | 0.1 | 0.01| 1   |
-| Clone A   | 0 | 4.9 | 3.9 | 0.5e6   | 0  | 0.1 | 0.1 | 99 | 0   | 0   | 2   |
-| ...       |    |     |     |         |    |     |     |    |     |     |     |
+| Clone   | T   | G   | Gln | Xv      | Xm   | L   | Glu | V  | Mab | rP  | rep |
+| :------ | :-- | :-- | :-- | :------ | :--- | :-- | :-- | :-- | :-- | :-- | :-- |
+| Clone A | 0   | 5.0 | 4.0 | 0.5e6   | 0    | 0.1 | 0.1 | 99 | 0   | 0   | 1   |
+| Clone A | 1   | 4.5 | 3.8 | 1.0e6   | 0    | 0.2 | 0.1 | 98 | 0.1 | 0.01| 1   |
+| Clone A | 0   | 4.9 | 3.9 | 0.5e6   | 0    | 0.1 | 0.1 | 99 | 0   | 0   | 2   |
+| ...     |     |     |     |         |      |     |     |    |     |     |     |
 
 ---
 
 ### Running the Script
 
-1.  **Save your data:** Ensure your kinetic data is saved as a `.csv` file (e.g., `2024-05-18_Clones_B_C_Kinetics.csv`) inside a `data/` folder in the same directory as the script.
-    * **Note:** The script currently expects the data file path to be hardcoded as `DATASET_PATH = 'data/2024-05-18_Clones_B_C_Kinetics.csv'` at the top of the script. Future updates will introduce a GUI for file selection.
-2.  **Define Exponential Phase:** Open the Python script and set `TIME_START` and `TIME_END` variables (in Section 5) to define the time range for your exponential growth phase. This is critical for accurate kinetic calculations.
+1.  **Save your data:** Ensure your kinetic data is saved as a `.csv` file (e.g., `Example.csv`) inside a `data/` folder in the same directory as the script.
+    * **Note:** The script currently expects the data file path to be hardcoded as `DATASET_PATH = 'data/Example.csv'` in the "Global Constants and User Configuration" section (0.1).
+2.  **Define Exponential Phase:** Open the Python script and set `TIME_START` and `TIME_END` variables (in Section 0.2 of "Global Constants and User Configuration") to define the time range (in hours) for your exponential growth phase. This is critical for accurate kinetic calculations.
 3.  **Run the Python script:** Execute the main Python script from your terminal (with your environment active):
     ```bash
     python your_script_name.py
@@ -98,91 +99,97 @@ The script follows a clear, step-by-step process to analyze your cell culture da
 
 ---
 
-### 1. Data Loading and Cleaning
+### 0. Global Constants and User Configuration
 
-**What happens here?** This initial phase reads your raw `.csv` file and performs essential cleaning and preparation steps to ensure data quality and consistency for subsequent analysis.
-
-* **File Loading:** The script loads the `.csv` data into a pandas DataFrame, including robust error handling for file not found scenarios.
-* **Column Validation:** It rigorously checks for the presence of all expected raw columns (`T`, `G`, `Xv`, `rep`, etc.), raising an error if any critical column is missing.
-* **Column Renaming:** Raw, often abbreviated, column names (e.g., `T`, `G`, `Xv`, `rep`) are systematically renamed to more descriptive and user-friendly labels (e.g., `Time (days)`, `Glucose (g/L)`, `Viable Cells (cells/mL)`, `Replicate`).
-* **Data Type Conversion:** All relevant columns (excluding `Clone` and `Replicate` which are handled separately) are converted to appropriate numerical data types. A robust method is employed to handle potential non-numeric entries (e.g., typos, characters), replacing them with `NaN` (Not a Number) to prevent script crashes and allow for missing data.
-* **Categorical Conversion:** The `Clone` and `Replicate` columns are explicitly converted to a categorical data type. This is more memory-efficient and optimizes grouping and plotting operations in pandas and seaborn.
+This section centralizes all user-configurable variables (file paths, time ranges, output directories, etc.) and global constants (like molecular weights of metabolites) in one place for easy modification. It also handles initial setup such as creating the output directory and configuring the plotting aesthetic using Seaborn.
 
 ---
 
-### 2. Analysis of Raw Data (Mean ± Standard Deviation)
+### 1. Helper Functions
 
-**This section provides a crucial first look at the raw experimental variability.** Your experiments typically include multiple replicates for each clone. To understand general trends and variability, the script visualizes the raw data with statistical summaries.
-
-* **Replicate Averaging:** For each measured parameter (e.g., `Viable Cells (cells/mL)`, `Glucose (g/L)`), the script groups the data by **`Time (days)`** and **`Clone`**.
-* **Mean and Standard Deviation Calculation:** Within each group (i.e., for a specific clone at a specific time point across all its replicates), the script calculates the **mean** value and the **standard deviation** of the parameter. The standard deviation quantifies the variability or spread of your replicate data around the mean at each time point.
-* **Time-Series Plots:** For each major kinetic parameter, a separate line plot is generated. These plots display the **mean** value over time, with **error bars** (or shaded regions) representing the **standard deviation** of the replicates at each time point. This gives a clear initial picture of clone performance and experimental variability.
-* **Output:** All generated plots are saved as `.png` images in the `output_kinetics_analysis/` directory.
+This section defines a set of reusable utility functions crucial for data handling, statistical calculations, and file operations. These include `clean_filename` (for creating safe file names), `confirm_columns` (for validating the presence of expected data columns), `calculate_kinetics_stats` (for computing means and standard deviations for time-series data), and `normalize_column` (for scaling data to a 0-1 range).
 
 ---
 
-### 3. Normalization and Visualization of Cell Growth
+### 2. Data Loading and Initial Cleaning
 
-**This step focuses on comparing growth profiles relative to initial conditions.**
+This initial phase is responsible for reading your raw `.csv` data, performing essential cleaning, and preparing the DataFrame for subsequent analysis.
 
-* **Normalization:** Viable cell density (VCD) for each individual replicate is normalized by its VCD at time 0. This allows for a direct comparison of relative growth trends, even if initial cell densities varied slightly between experiments.
-* **Statistical Analysis:** Similar to raw data, the mean and standard deviation of these normalized VCDs are calculated per clone per time point.
-* **Normalized Growth Plot:** A time-series plot displays the mean normalized viable cell growth, with standard deviation error bars, providing a clear visual of relative growth dynamics across clones.
-* **Output:** The normalized growth plot is saved as a `.png` image in the `output_kinetics_analysis/` directory.
-
----
-
-### 4. Combined Kinetic Plots (Dual Y-axis)
-
-**This section helps in identifying interrelationships between different kinetic parameters over time.**
-
-* **Dual-Axis Visualization:** The script generates plots that display two different kinetic variables against time on a single graph, each utilizing its own Y-axis for appropriate scaling. This is particularly useful for observing dependencies, such as substrate consumption coupled with product formation.
-* **Mean and Standard Deviation:** Both primary and secondary Y-axis variables are plotted with their mean values and standard deviation error bars (calculated from the replicate data), offering a comprehensive view of trends and variability.
-* **Plot Configurations:** The script is set up to generate specific combinations like Glucose vs. Lactate, Glutamine vs. Glutamate, and Glucose vs. Glutamine, which are common relationships of interest in cell culture.
-* **Output:** All generated combined plots are saved as `.png` images in the `output_kinetics_analysis/` directory.
+* **File Loading:** The script loads the `.csv` data into a pandas DataFrame, including robust error handling for `FileNotFoundError` and other loading issues.
+* **Column Validation & Renaming:** It rigorously checks for the presence of all expected raw columns. Raw column names (e.g., `T`, `Xv`, `Xm`, `Mab`, `rP`, `rep`) are systematically renamed to more descriptive and user-friendly labels (e.g., `Time (hours)`, `Viable Cells (cells/mL)`, `Dead Cells (cells/mL)`, `Antibody Concentration (mg/mL)`, `Recombinant Protein (mg/mL)`, `Replicate`).
+* **Data Type Conversion:** All relevant columns are converted to appropriate numerical data types. A robust method handles potential non-numeric entries (e.g., typos, characters) by replacing them with `NaN` (Not a Number) to prevent script crashes.
+* **Categorical Conversion:** `Clone` and `Replicate` columns are explicitly converted to a categorical data type for efficient grouping and plotting.
+* **Unused Column Handling:** Columns in the raw data that are not required for analysis (e.g., `vivas`, `muertas`, `C`, `dil` from `Example.csv` if `Xm` is used for dead cells) are explicitly dropped to maintain a cleaner and more focused DataFrame.
 
 ---
 
-### 5. Calculation of Kinetic and Stoichiometric Parameters
+### 3. Data Normalization for Visualization
 
-**This is the core of the quantitative analysis, deriving key performance indicators for each clone from replicate data.**
+This step creates a separate DataFrame with normalized data specifically for plotting purposes. The original `kinetics_data` DataFrame remains untouched to ensure that scientific calculations are performed on the raw, unscaled values.
 
-This section calculates crucial bioprocess parameters, focusing on the **exponential growth phase** (defined by `TIME_START` and `TIME_END` variables in the script). Critically, these calculations are performed **for each individual replicate first**, and then aggregated to provide a mean and standard deviation for each clone.
+* **Min-Max Scaling:** Numerical columns (excluding identifiers) are normalized to a 0-1 range using the Min-Max normalization method: `(value - min) / (max - min)`. Columns with constant values are normalized to 0.0.
+* **Purpose:** This normalized dataset is primarily used to generate additional plots that compare relative changes between different parameters or clones, regardless of their absolute magnitudes.
+
+---
+
+### 4. Plotting Functions (Definitions)
+
+This section contains the definitions for two primary plotting functions that are used throughout the script to generate various kinetic plots:
+
+* **`save_plot_with_stats`:** Generates and saves a time-series plot for a single kinetic parameter, displaying its mean and standard deviation across replicates for each clone. It includes robust checks for missing or all-NaN data.
+* **`save_combined_plot_with_stats`:** Generates and saves a combined plot with two Y-axes, allowing the comparison of two different kinetic variables against a common X-axis (Time). Both variables are plotted with their mean values and standard deviation error bars, providing a comprehensive view of trends and variability. It also includes robust data checks.
+
+---
+
+### 5. Generate Individual Kinetic Plots
+
+This section utilizes the `save_plot_with_stats` function to generate time-series plots for each individual kinetic parameter.
+
+* **Parameter-Specific Plots:** Separate line plots are created for `Viable Cells (cells/mL)`, `Viability (%)`, `Glucose (g/L)`, `Lactate (g/L)`, `Glutamine (mmol/L)`, `Glutamate (mmol/L)`, `Antibody Concentration (mg/mL)`, `Recombinant Protein (mg/mL)`, and `Dead Cells (cells/mL)`.
+* **Mean and Standard Deviation:** Each plot displays the mean value over time, with error bars representing the standard deviation of the replicates at each time point, offering a clear initial picture of clone performance and experimental variability.
+* **Normalized Plots (Optional):** If `GENERATE_NORMALIZED_PLOTS` is set to `True`, an additional set of plots with normalized (0-1 scaled) data is generated for comparative visualization.
+* **Output:** All generated plots are saved as high-resolution `.png` images in the `figures/` directory.
+
+---
+
+### 6. Generate Combined Kinetic Plots (Dual Y-Axis)
+
+This section leverages the `save_combined_plot_with_stats` function to create plots that illustrate the interrelationships between two different kinetic parameters over time.
+
+* **Dual-Axis Visualization:** Plots are generated combining pairs of variables such as "Glucose and Lactate", "Glutamine and Glutamate", "Glucose and Glutamine", "Viable Cell Kinetics and Antibody Concentration", and "Viable Cell Kinetics and Recombinant Protein". Each variable utilizes its own Y-axis for appropriate scaling.
+* **Mean and Standard Deviation:** Both primary and secondary Y-axis variables are plotted with their mean values and standard deviation error bars (calculated from the replicate data).
+* **Output:** All generated combined plots are saved as high-resolution `.png` images in the `figures/` directory.
+
+---
+
+### 7. Calculation of Kinetic and Stoichiometric Parameters
+
+This is the core of the quantitative analysis, deriving key performance indicators for each clone from replicate data, focusing on the **exponential growth phase** (defined by `TIME_START` and `TIME_END`).
 
 * **Replicate-Level Calculation:**
-    * For each clone, the script iterates through every individual replicate.
-    * For each replicate, data within the user-defined `TIME_START` and `TIME_END` is isolated. This range is assumed to represent the true exponential growth phase where rates are relatively constant.
-    * **Unit Conversions:** Glucose and Lactate concentrations are converted from `g/L` to `mmol/L`, and `cells/mL` to `cells/L` to ensure consistent units across all calculations.
-    * **Specific Growth Rate ($\mu$, d$^{-1}$):**
-        * The **natural logarithm of Viable Cell Density (`ln(VCD)`)** is calculated for the replicate.
-        * A **linear regression** is performed on `ln(VCD)` vs. `Time (days)` within the exponential phase for that specific replicate.
-        * The **slope** of this linear regression is the **specific growth rate ($\mu$)** for that replicate, indicating how fast cells are dividing.
-    * **Total Deltas ($\Delta$)**: The total change in concentration for each metabolite (e.g., Glucose, Lactate) and viable cells ($\Delta X$) is calculated over the exponential phase for that replicate by subtracting the initial value from the final value within that phase.
-    * **Biomass Yields ($Y_{x/s}$, cells/L/mmol):**
-        * These parameters quantify the efficiency of converting a substrate into viable cells.
-        * For each replicate, calculated as: $\Delta X / |\Delta \text{Substrate}|$ (e.g., $Y_{x/G} = \Delta X / |\Delta \text{Glucose}|$).
-    * **Average Volumetric Rates ($\Delta / \Delta t$, mmol/L/day):**
-        * These represent the overall rate of consumption or production of a metabolite over the time interval for that replicate.
-        * Calculated as: $\Delta \text{Metabolite} / \Delta \text{Time}$.
-    * **Specific Consumption/Production Rates (q-rates, mmol/cell·day):**
-        * These indicate the rate at which a *single cell* consumes a substrate or produces a product/byproduct, normalized by cell density.
-        * For each replicate, calculated as: $|\text{Average Rate of Change}| / \text{Average Viable Cell Density}$ (e.g., $q_G = |\Delta \text{Glucose} / \Delta t| / \text{Average X}$).
-* **Aggregation for Clones:**
-    * After calculating parameters for every individual replicate, all these replicate-level values are collected into a DataFrame (`df_replicate_params`). This DataFrame is displayed in the console to allow inspection of individual replicate results.
-    * Finally, this `df_replicate_params` is grouped by `Clone`, and the **mean** and **standard deviation** are calculated for each kinetic and stoichiometric parameter across its replicates.
+    * For each clone and individual replicate, data within the user-defined exponential phase is isolated.
+    * **Unit Conversions:** Glucose and Lactate concentrations are converted from `g/L` to `mmol/L`, and viable cell density from `cells/mL` to `cells/L` to ensure consistent units.
+    * **Specific Growth Rate ($\mu$, d$^{-1}$):** Calculated as the slope of the linear regression of the natural logarithm of Viable Cell Density (`ln(VCD)`) versus `Time (hours)`. The result is then **converted to per day (d$^{-1}$)** by multiplying by 24 (since time is in hours).
+    * **Biomass Yields ($Y_{x/s}$, cells/L/mmol):** Quantify the efficiency of converting a substrate into viable cells, calculated as `ΔX / |ΔSubstrate|`.
+    * **Average Volumetric Rates ($\Delta / \Delta t$, mmol/L/day or mg/L/day):** Represent the overall rate of consumption or production of a metabolite or product over the time interval. Calculated as `ΔMetabolite / ΔTime`, and then **converted to per day** by multiplying by 24. This applies to Glucose, Glutamine, Lactate, Glutamate, Antibody Concentration, and Recombinant Protein.
+    * **Specific Consumption/Production Rates (q-rates, mmol/cell·day or mg/cell·day):** Indicate the rate at which a *single cell* consumes a substrate or produces a product/byproduct, normalized by cell density. Calculated as `|Average Rate of Change| / Average Viable Cell Density`, and then **converted to per day** by multiplying by 24. This applies to Glucose, Glutamine, Lactate, Glutamate, Antibody Concentration (`qMab`), and Recombinant Protein (`qrP`).
+* **Aggregation for Clones:** After calculating parameters for every individual replicate, these values are aggregated by `Clone` to compute the **mean** and **standard deviation** for each kinetic and stoichiometric parameter across its replicates.
 * **Output:** The script prints two DataFrames to the console: one showing the calculated parameters for each individual replicate, and another summarizing these parameters per clone as `Mean ± Standard Deviation`.
 
 ---
 
-### 6. Parameter Comparison Plots
+### 8. Parameter Comparison Plots
 
-**This final section generates comparative visualizations to help you quickly identify trends, performance differences, and relationships between calculated parameters across different clones.**
+This final section generates comparative visualizations to help you quickly identify trends, performance differences, and relationships between calculated parameters across different clones.
 
-* **Consistent Coloring:** Each unique clone is assigned a specific color, which is used consistently across all comparison plots for easy identification and comparison.
-* **Bar Plots:** Used for single key metrics (e.g., Specific Growth Rate) to show direct, side-by-side comparisons between clones. **Error bars representing the standard deviation** are included to indicate the variability observed across replicates for each clone.
-* **Scatter Plots:** Used to visualize the relationship between two different calculated parameters (e.g., Biomass Yield on Glucose vs. Biomass Yield on Glutamine, or Specific Glucose Consumption vs. Specific Lactate Production). These plots also include **X and Y error bars** based on the standard deviation of each parameter across replicates, helping to understand the spread of the data points.
-* **Professional Labels:** Plot titles and axis labels utilize LaTeX formatting for standard scientific symbols (e.g., $\mu$, $Y_{x/G}$, $q_G$, $\cdot$), enhancing the professional and scientific appearance of the figures.
-* **Output:** All comparison plots are saved as high-resolution `.png` images in the `output_kinetics_analysis/` directory.
+* **Consistent Coloring:** Each unique clone is assigned a specific color, used consistently across all comparison plots for easy identification.
+* **Bar Plots:** Used for single key metrics (e.g., Specific Growth Rate) to show direct, side-by-side comparisons between clones, with error bars indicating the standard deviation.
+* **Scatter Plots:** Used to visualize the relationship between two different calculated parameters (e.g., Biomass Yields, Specific Consumption/Production Rates). This section now includes plots comparing:
+    * Specific Growth Rate vs. Specific Antibody Production ($q_{Mab}$)
+    * Specific Growth Rate vs. Specific Recombinant Protein Production ($q_{rP}$)
+    These plots also include X and Y error bars based on the standard deviation, helping to understand the spread of the data points.
+* **Professional Labels:** Plot titles and axis labels utilize LaTeX formatting for standard scientific symbols (e.g., $\mu$, $Y_{x/G}$, $q_G$, $q_{Mab}$, $q_{rP}$, $\cdot$), enhancing the professional and scientific appearance of the figures.
+* **Output:** All comparison plots are saved as high-resolution `.png` images in the `figures/` directory.
 
 ---
 
@@ -192,7 +199,7 @@ By examining the generated plots and the `df_results` table, you can:
 
 * **Identify Fast Growers:** Quickly see which clones exhibit the highest specific growth rate ($\mu$) and how consistent this rate is across replicates.
 * **Assess Metabolic Efficiency:** Determine which clones have high biomass yields ($Y_{x/s}$) on key substrates and potentially low specific byproduct production ($q_L$, $q_{Glu}$), indicating more efficient metabolism for biomass production.
-* **Evaluate Productivity Potential:** Correlate these kinetic parameters with recombinant protein ($rP$) or antibody ($MAb$) production data to select optimal clones based on desired bioprocess characteristics.
+* **Evaluate Productivity Potential:** Correlate these kinetic parameters with product (antibody and recombinant protein) production data to select optimal clones based on desired bioprocess characteristics, including specific productivity rates ($q_{Mab}$, $q_{rP}$).
 * **Understand Variability:** The inclusion of standard deviations on all plots and tables provides crucial insights into the reproducibility and robustness of each clone's performance. High standard deviations might indicate a need for further investigation into experimental consistency or inherent biological heterogeneity.
 
 This comprehensive analysis supports informed decision-making in clone selection for bioprocess development.
