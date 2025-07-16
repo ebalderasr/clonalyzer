@@ -38,6 +38,7 @@ q_Glc = (ΔGlucose in mol × 1e12) / IVCD  →  pmol/(cell·h)
 ```
 
 All rates are computed using volume-normalized quantities for full mass balance integrity.
+📄 For a detailed explanation of how kinetic and stoichiometric parameters are calculated, see the [How does Clonalyzer do the calculations.pdf](./How%20does%20Clonalyzer%20do%20the%20calculations.pdf) document included in this repository.
 
 ## 📄 Input Data Format
 
@@ -73,6 +74,7 @@ Clonalyzer expects a single CSV file in `data/data.csv` with the **first row res
 |------|-------|--------|-----|-----------|------------|--------------|-----------|-----------|----------|---------|---------|
 | 0    | 0     | A     | 1   | 10:00     | 03/07/2025 | FALSE        | 3.10E+05  | 4.00E+03  | 98.73    | 6.59    | 0.00    |
 | 24   | 1     | B      | 1   | 10:00     | 04/07/2025 | FALSE        | 5.20E+05  | 4.00E+03  | 99.22    | 5.88    | 0.44    |
+
 
 ### Flexibility for Other Measurements
 
@@ -118,28 +120,85 @@ Place your CSV file inside the `data/` folder and rename it to:
 data/data.csv
 ```
 
+
 ## 📈 Usage
 
-### 1. Interval-based kinetics
+Clonalyzer is organized into three independent analysis blocks. Each block includes a data processing script and a plotting script. You can run all blocks, or choose only the ones that fit your experimental design.
+
+---
+
+### 🔹 Block 1: Interval-based kinetics (Clone × Rep × Time)
+
+Use this block to compute kinetics between each pair of consecutive time points per replicate (interval-by-interval). Ideal for detailed trajectory analysis.
 
 ```bash
 python -m clonalyzer.interval_kinetics
+```
+
+- Calculates μ, IVCD, ΔX, ΔGlc, ΔLac, q_G, q_L, Y_XG, Y_XL for each interval
+- Input: `data/data.csv`
+- Output: `outputs/interval_kinetics.csv`
+
+```bash
 python -m clonalyzer.plot_raw
 ```
 
-### 2. Aggregated kinetics
+- Generates per-sample scatter plots:
+  - Raw variables (VCD, glucose, etc.)
+  - Kinetic parameters per interval
+  - Correlation plots
+
+---
+
+### 🔹 Block 2: Aggregated kinetics (Clone × Time)
+
+Use this block to compute and visualize the average ± SD of all measurements and parameters per clone at each time point.
 
 ```bash
 python -m clonalyzer.grouped_kinetics
+```
+
+- Aggregates all numeric columns by `Clone × t_hr`
+- Output: `outputs/results_agg_by_clone_time.csv`
+
+```bash
 python -m clonalyzer.plot_grouped
 ```
 
-### 3. Exponential-phase kinetics
+- Line plots with error bars for:
+  - Raw trends (glucose, lactate, viability...)
+  - Kinetic variables over time
+  - Correlations (mean ± SD)
+
+---
+
+### 🔹 Block 3: Exponential-phase kinetics (Clone × Rep)
+
+Use this block to extract clone-level metrics only during exponential growth. You’ll be prompted to specify the start and end time of the exponential phase.
 
 ```bash
 python -m clonalyzer.exp_phase_kinetics
+```
+
+- Requires user input:
+  - Start time (e.g. `0`)
+  - End time (e.g. `96`)
+- Calculates μ, IVCD, yields, and specific rates using only data within that window
+- Output:
+  - `kinetics_by_clone_rep.csv` (per replicate)
+  - `kinetics_by_clone.csv` (mean ± SD per clone)
+
+```bash
 python -m clonalyzer.plot_exp
 ```
+
+- Bar plots (mean ± SD) for each parameter per clone
+- Output: `outputs/figures_exp/`
+
+---
+
+Each block can be run independently. For example, if you only need clone-level performance comparisons, Block 3 is sufficient.
+
 
 ## 📂 Outputs
 
