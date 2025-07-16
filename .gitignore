@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Output folders (auto-generated)
+outputs/
+*.png
+
+# Data (except template CSV)
+data/data.csv
+!data/.gitkeep
+
+# VS Code settings
+.vscode/
+
+# Mac / Linux system files
+.DS_Store
+
+# Python environment
+.env/
+.venv/
+env/
+venv/
+
+# Installer logs
+pip-log.txt
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# OS-generated files
+Thumbs.db
