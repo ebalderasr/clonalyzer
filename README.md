@@ -9,34 +9,95 @@ Designed for bioprocess engineers and data scientists working with clonal cell l
 Clonalyzer is a modular Python toolkit for the kinetic and stoichiometric analysis of mammalian cell cultures, particularly designed for fed-batch bioprocesses using CHO cells. It helps quantify growth rates, nutrient consumption, metabolite production, yields, and specific rates—per replicate or per clone.
 
 🔎 **Use cases include**:
-- Comparing clone performance in early-stage screening
-- Monitoring nutrient and metabolite profiles over time
-- Estimating growth and productivity during the exponential phase
-- Generating clean, publication-ready plots
+
+* Comparing clone performance in early-stage screening
+* Monitoring nutrient and metabolite profiles over time
+* Estimating growth and productivity during the exponential phase
+* Generating clean, publication-ready plots
 
 Although Clonalyzer was designed with **fed-batch CHO processes** in mind, it is **not limited** to them. For instance:
-- Block 3 (exponential-phase analysis) can be used for any batch process.
-- Block 1 and 2 support general interval or time-based profiling, including perfusion or hybrid strategies.
 
-## 📐 Kinetic and Stoichiometric Calculations
+* Block 3 (exponential-phase analysis) can be used for any batch process.
+* Block 1 and 2 support general interval or time-based profiling, including perfusion or hybrid strategies.
+
+## 🖐️ Kinetic and Stoichiometric Calculations
 
 Clonalyzer computes the following parameters for each Clone × Replicate:
 
-| Parameter      | Symbol      | Units                     | Description |
-|----------------|-------------|----------------------------|-------------|
-| Growth rate    | μ           | h⁻¹                        | Calculated as slope of ln(VCD) over time |
-| Integrated viable cell density | IVCD      | cells·h·mL⁻¹ or cells·h | Area under the VCD curve over time (trapezoidal rule) |
-| Cell balance   | ΔX          | cells                     | Difference in viable cells in total volume |
-| Substrate balance | ΔS (Glc, Lac) | mol                    | Difference in total moles in volume |
-| Yield on substrate | Yₓ/ₛ     | cells·mol⁻¹              | ΔX / ΔS |
-| Specific rate  | qₛ          | pmol·cell⁻¹·h⁻¹           | ΔS normalized to IVCD and converted to pmol |
+| Parameter                      | Symbol        | Units                   | Description                                           |
+| ------------------------------ | ------------- | ----------------------- | ----------------------------------------------------- |
+| Growth rate                    | μ             | h⁻¹                     | Calculated as slope of ln(VCD) over time              |
+| Integrated viable cell density | IVCD          | cells·h·mL⁻¹ or cells·h | Area under the VCD curve over time (trapezoidal rule) |
+| Cell balance                   | ∆X            | cells                   | Difference in viable cells in total volume            |
+| Substrate balance              | ∆S (Glc, Lac) | mol                     | Difference in total moles in volume                   |
+| Yield on substrate             | Yₓ/ₛ          | cells·mol⁻¹             | ∆X / ∆S                                               |
+| Specific rate                  | qₛ            | pmol·cell⁻¹·h⁻¹         | ∆S normalized to IVCD and converted to pmol           |
 
-For example, specific consumption of glucose (q_Glc):
+For example, specific consumption of glucose (q\_Glc):
 
 ```
-q_Glc = (ΔGlucose in mol × 1e12) / IVCD  →  pmol/(cell·h)
+q_Glc = (∆Glucose in mol × 1e12) / IVCD  →  pmol/(cell·h)
 ```
 
+All rates are computed using volume-normalized quantities for full mass balance integrity.
+
+---
+
+## 📃 Full Calculation Details
+
+All calculations are performed per biological replicate (Clone × Rep), using volume-normalized data to maintain mass balance integrity.
+
+### Specific Growth Rate (μ)
+
+$$\mu = \frac{\ln X_2 - \ln X_1}{t_2 - t_1}$$
+
+Where:
+
+* $$X_1$$, $$X_2$$ are viable cell densities at times $$t_1$$ and $$t_2$$
+* Units: cells/mL and hours
+* Result: $$\mu$$ in  $$h^{-1}$$
+
+### Integral of Viable Cell Density (IVCD)
+
+$$\text{IVCD}_{\text{mL}} = \int_{t_1}^{t_2} X(t) dt \approx \frac{X_1 + X_2}{2} \cdot \Delta t$$
+
+$$\text{IVCD}_{\text{tot}} = \text{IVCD}_{\text{mL}} \cdot \frac{V_1 + V_2}{2}$$
+
+* Units: cells·h or cells·h·mL⁻¹
+
+### Metabolite or Biomass Balance (∆S, ∆X)
+
+$$\Delta X = X_2 V_2 - X_1 V_1
+\quad\text{and}\quad
+\Delta S = S_1 V_1 - S_2 V_2$$
+
+
+* $$X$$: cells/mL
+* $$S$$: mol/mL
+* $$V$$: mL
+
+$$\Delta S$$ is positive if the substrate was consumed, and negative if it was produced.
+
+### Yield on Substrate ($$Y_{X/S}$$)
+
+$$Y_{X/S} = \frac{\Delta X}{\Delta S}$$
+
+* Units: cells/mol
+
+### Specific Rate ($q_S$)
+
+$$q_S = \frac{\Delta S \cdot 10^{12}}{\text{IVCD}_{\text{tot}}}$$
+
+
+* $$\Delta S$$: mol
+* $$IVCD_{tot}$$: cell·h
+* $$q_S$$: pmol/(cell·h)
+
+---
+
+📄 For a detailed explanation, see the [How does Clonalyzer do the calculations.pdf](./How%20does%20Clonalyzer%20do%20the%20calculations.pdf)
+
+---
 All rates are computed using volume-normalized quantities for full mass balance integrity.
 📄 For a detailed explanation of how kinetic and stoichiometric parameters are calculated, see the [How does Clonalyzer do the calculations.pdf](./How%20does%20Clonalyzer%20do%20the%20calculations.pdf) document included in this repository.
 
@@ -135,7 +196,7 @@ Use this block to compute kinetics between each pair of consecutive time points 
 python -m clonalyzer.interval_kinetics
 ```
 
-- Calculates μ, IVCD, ΔX, ΔGlc, ΔLac, q_G, q_L, Y_XG, Y_XL for each interval
+- Calculates $$μ, IVCD, ΔX, ΔGlc, ΔLac, q_G, q_L, Y_XG, Y_XL$$ for each interval
 - Input: `data/data.csv`
 - Output: `outputs/interval_kinetics.csv`
 
