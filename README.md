@@ -184,30 +184,29 @@ data/data.csv
 
 ## 📈 Usage
 
-Clonalyzer is organized into three independent analysis blocks. Each block includes a data processing script and a plotting script. You can run all blocks, or choose only the ones that fit your experimental design.
+Clonalyzer is organized into three independent analysis blocks. Each block includes a Jupyter Notebook that executes both data processing and plotting steps in sequence. This setup ensures a streamlined, beginner-friendly experience.
 
 ---
 
 ### 🔹 Block 1: Interval-based kinetics (Clone × Rep × Time)
 
-Use this block to compute kinetics between each pair of consecutive time points per replicate (interval-by-interval). Ideal for detailed trajectory analysis.
+Use this block to compute kinetics between each pair of consecutive time points per replicate (interval-by-interval). Ideal for detailed kinetic trajectories.
+
+➡️ **To run Block 1**, open and execute the notebook:
 
 ```bash
-python -m clonalyzer.interval_kinetics
+Block_1.ipynb
 ```
 
-- Calculates $$μ, IVCD, ΔX, ΔGlc, ΔLac, q_G, q_L, Y_XG, Y_XL$$ for each interval
-- Input: `data/data.csv`
-- Output: `outputs/interval_kinetics.csv`
+This notebook performs:
 
-```bash
-python -m clonalyzer.plot_raw
-```
+* Interval-based kinetic calculations (`interval_kinetics`)
+* Per-sample scatter plots (`plot_raw`)
 
-- Generates per-sample scatter plots:
-  - Raw variables (VCD, glucose, etc.)
-  - Kinetic parameters per interval
-  - Correlation plots
+**Output:**
+
+* CSV file: `outputs/interval_kinetics.csv`
+* Figures: `outputs/figures_raw/` (time trends, kinetics, correlations)
 
 ---
 
@@ -215,21 +214,21 @@ python -m clonalyzer.plot_raw
 
 Use this block to compute and visualize the average ± SD of all measurements and parameters per clone at each time point.
 
-```bash
-python -m clonalyzer.grouped_kinetics
-```
-
-- Aggregates all numeric columns by `Clone × t_hr`
-- Output: `outputs/results_agg_by_clone_time.csv`
+➡️ **To run Block 2**, open and execute the notebook:
 
 ```bash
-python -m clonalyzer.plot_grouped
+Block_2.ipynb
 ```
 
-- Line plots with error bars for:
-  - Raw trends (glucose, lactate, viability...)
-  - Kinetic variables over time
-  - Correlations (mean ± SD)
+This notebook performs:
+
+* Aggregation of results (`grouped_kinetics`)
+* Time-course plots with error bars (`plot_grouped`)
+
+**Output:**
+
+* CSV file: `outputs/results_agg_by_clone_time.csv`
+* Figures: `outputs/figures_agg/` (time trends, kinetics, correlations)
 
 ---
 
@@ -237,28 +236,42 @@ python -m clonalyzer.plot_grouped
 
 Use this block to extract clone-level metrics only during exponential growth. You’ll be prompted to specify the start and end time of the exponential phase.
 
-```bash
-python -m clonalyzer.exp_phase_kinetics
-```
-
-- Requires user input:
-  - Start time (e.g. `0`)
-  - End time (e.g. `96`)
-- Calculates μ, IVCD, yields, and specific rates using only data within that window
-- Output:
-  - `kinetics_by_clone_rep.csv` (per replicate)
-  - `kinetics_by_clone.csv` (mean ± SD per clone)
+➡️ **To run Block 3**, open and execute the notebook:
 
 ```bash
-python -m clonalyzer.plot_exp
+Block_3.ipynb
 ```
 
-- Bar plots (mean ± SD) for each parameter per clone
-- Output: `outputs/figures_exp/`
+This notebook performs:
+
+* Kinetic calculations restricted to the exponential phase (`exp_phase_kinetics`)
+* Bar plots of clone-level performance (`plot_exp`)
+
+**Output:**
+
+* CSV files:
+
+  * `outputs/kinetics_by_clone_rep.csv`
+  * `outputs/kinetics_by_clone.csv`
+* Figures: `outputs/figures_exp/`
 
 ---
 
-Each block can be run independently. For example, if you only need clone-level performance comparisons, Block 3 is sufficient.
+### 🧪 Optional: Use the standalone scripts directly
+
+Each script used in the notebooks is also available in the `scripts/` folder for advanced users or integration into custom pipelines.
+
+To use these scripts manually:
+
+1. Copy the desired script from `scripts/` to the root folder.
+2. Ensure `data/data.csv` exists in the root-level `data/` folder.
+3. Run the script from the root of the repository using:
+
+```bash
+python script_name.py
+```
+
+> ⚠️ These scripts expect relative paths like `data/data.csv` and `outputs/`, so they **must be executed from the root folder**, not from within `scripts/`.
 
 
 ## 📂 Outputs
