@@ -59,11 +59,23 @@ Where:
 
 ### Integral of Viable Cell Density (IVCD)
 
-$$\text{IVCD}_{\text{mL}} = \int_{t_1}^{t_2} X(t) dt \approx \frac{X_1 + X_2}{2} \cdot \Delta t$$
+The integral of viable cell density over time is estimated using the trapezoidal rule:
 
-$$\text{IVCD}_{\text{tot}} = \text{IVCD}_{\text{mL}} \cdot \frac{V_1 + V_2}{2}$$
+$$
+IVCD_{mL} = \frac{X_1 + X_2}{2} \cdot (t_2 - t_1)
+$$
 
-* Units: cells·h or cells·h·mL⁻¹
+To convert to a total IVCD accounting for culture volume:
+
+$$
+IVCD_{tot} = IVCD_{mL} \cdot \frac{V_1 + V_2}{2}
+$$
+
+Where:
+
+- X₁, X₂: viable cell densities at t₁ and t₂
+- Units: cells·h·mL⁻¹ for IVCDₘₗ; cells·h for IVCDₜₒₜ
+
 
 ### Metabolite or Biomass Balance (∆S, ∆X)
 
@@ -149,13 +161,30 @@ You may include as many additional columns as needed—the system will ignore th
 ## 📁 Project Structure
 
 ```
-clonalyzer/
-├── interval_kinetics.py      # Interval-based kinetics (Clone × Rep × Time)
-├── grouped_kinetics.py       # Aggregated kinetics (Clone × Time)
-├── exp_phase_kinetics.py     # Exponential-phase kinetics (Clone × Rep)
-├── plot_raw.py               # Per-sample scatter plots
-├── plot_grouped.py           # Grouped line plots with error bars
-├── plot_exp.py               # Bar plots per clone (exponential phase)
+Clonalyzer/
+├── Block_1.ipynb                  # Notebook for interval-based kinetics (Clone × Rep × Time)
+├── Block_2.ipynb                  # Notebook for grouped kinetics (Clone × Time)
+├── Block_3.ipynb                  # Notebook for exponential-phase analysis (Clone × Rep)
+├── scripts/                       # Standalone Python scripts (modular components)
+│   ├── interval_kinetics.py       # Interval-based kinetic calculations
+│   ├── grouped_kinetics.py        # Aggregated (mean ± SD) calculations
+│   ├── exp_phase_kinetics.py      # Kinetics during exponential phase
+│   ├── plot_raw.py                # Scatter plots for raw data
+│   ├── plot_grouped.py            # Line plots with error bars (grouped data)
+│   └── plot_exp.py                # Bar plots (clone-level metrics)
+├── data/
+│   └── data.csv                   # Input dataset (with metadata in first row)
+├── outputs/                       # All generated CSVs and figures
+│   ├── interval_kinetics.csv
+│   ├── results_agg_by_clone_time.csv
+│   ├── kinetics_by_clone.csv
+│   ├── kinetics_by_clone_rep.csv
+│   ├── figures_raw/
+│   ├── figures_agg/
+│   └── figures_exp/
+├── requirements.txt              # Python dependencies
+├── README.md                     # Project documentation
+└── How does Clonalyzer do the calculations.pdf
 ```
 
 ## 🚀 Quickstart
